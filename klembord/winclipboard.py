@@ -185,31 +185,32 @@ class WinClipboard(object):
 
 	def wrap_html(self, fragment_str):
 
-		fragment_bytes = fragment_str.encode('utf8')
+		fragment_bytes = fragment_str
 		description = (
 			'Version:0.9\r\n'
 			'StartHTML:{0}\r\n'
 			'EndHTML:{1}\r\n'
 			'StartFragment:{2}\r\n'
 			'EndFragment:{3}\r\n'
+            'SourceURL:https://google.com\r\n'
 		)
 
 		html_header_suffix =  (
 			'<html>\r\n'
 			'<body>\r\n'
-			'<!--StartFragment-->\r\n'
+			'<!--StartFragment-->'
 		)
 
 		html_header = description + html_header_suffix
 
-		padded_description = description.format(*['00000000'] * 4)
+		padded_description = description.format(*['0000000000'] * 4)
 		padded_html_header = padded_description + html_header_suffix
 
 		footer_bytes = (
-			'\r\n<!--EndFragment-->\r\n'
+			'<!--EndFragment-->\r\n'
 			'</body>\r\n'
 			'</html>'
-		).encode('utf8')
+		)
 
 		description_size = len(padded_description.encode('utf8'))
 		html_header_size = len(padded_html_header.encode('utf8'))
@@ -224,10 +225,10 @@ class WinClipboard(object):
 		)
 
 		header = html_header.format(
-			*[str(x).zfill(8) for x in sizes]
-		).encode('utf8')
+			*[str(x).zfill(10) for x in sizes]
+		)
 
-		wrapped = b''.join((header, fragment_bytes, footer_bytes))
+		wrapped = ''.join((header, fragment_bytes, footer_bytes)).encode('utf8')
 
 
 		return wrapped
